@@ -965,3 +965,51 @@ $stmt -> execute( array(":type"=>'手鼓女神') );
 $data = $stmt -> fetchAll( PDO::FETCH_ASSOC );
 var_dump($data);*/
 
+
+
+
+
+
+
+
+
+
+
+
+
+    public function wechatpay(Order $order){
+      require_once "../wxpay/lib/WxPay.Api.php";    // 微信支付的核心类文件
+      require_once "../wxpay/WxPay.NativePay.php";  // 微信扫码支付的类文件[原文件在example/目录下]
+
+      // 组装微信支付的二维码
+      $notify = new \NativePay();
+
+      $input = new \WxPayUnifiedOrder();
+      $input->SetBody($order->pro_name);    // 设置商品或支付单简要描述
+      // $input->SetAttach("test");  // 设置附加数据
+      $input->SetOut_trade_no( $order->order_number ); // 设置商户系统内部的订单号
+      $input->SetTotal_fee( $order->price * 100 );  // 设置订单总金额
+      $input->SetTime_start( date("YmdHis", strtotime( $order->created_at) ) );  // 设置订单生成时间
+      $input->SetTime_expire(date("YmdHis", strtotime( $order->created_at) + 3600 * 6 ) );  // 设置订单失效时间
+      // $input->SetGoods_tag("test");
+      $input->SetNotify_url( url('order/notify') ); // 设置接收微信支付异步通知回调地址 （这个地址必须是公网上面可以访问的！！）
+      $input->SetTrade_type("NATIVE");     // 设置支付的类型(扫码支付的值是 NATIVE )
+      $input->SetProduct_id( $order->pro_id );  // 商品ID
+      $result = $notify->GetPayUrl($input);// 生成二维码链接
+      if( !isset( $result["code_url"] ) ){
+        return redirect()->back()->withErrors(['当前订单已经支付了！']);
+      }
+
+      $url2 = urlencode($result["code_url"]);
+      // echo $url2;die;
+      $qrcode_url  = url('order/qrcode');
+      $data['url'] = "$qrcode_url?data=$url2";
+      $data['oid'] = $order->id;
+
+//       echo <<<DDD
+//       <img src="$qrcode_url?data=$url2" style="width:150px;height:150px;"/>
+// DDD;
+
+
+
+
