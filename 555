@@ -939,3 +939,29 @@ https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_7
 线上开发微信支付时如果范围的结果出现错误，我们是无法观察到的！
 所以需要在接收支付结果的页面中，把数据操作的结果和微信返回的结果使用日志读写的方式，写入到文件中，我们通过观察和比对文件就可以进行正常的排错工作了。
 
+
+<?php
+class DB
+{
+	//声明一个静态的对象
+	private static $instance = null;
+	//声明私有的构造方法
+	private function __construct(){
+		self::$instance = new PDO("mysql:host=localhost;dbname=wx;charset=utf8;","root","itcast888");
+	}
+	//声明获取实例的静态方法
+	public static function getInstance(){
+		if( self::$instance ==null ){
+			new DB();
+		}
+		return self::$instance;
+	} 
+}
+/*
+//测试如下
+$db = DB::getInstance();
+$stmt = $db -> prepare( "select * from  wx_news where type=:type" );
+$stmt -> execute( array(":type"=>'手鼓女神') );
+$data = $stmt -> fetchAll( PDO::FETCH_ASSOC );
+var_dump($data);*/
+
