@@ -1013,3 +1013,47 @@ var_dump($data);*/
 
 
 
+七、案例-天气预报查询
+所有的百度车联网Api的接口汇总网址：http://lbsyun.baidu.com/index.php?title=car
+  
+天气接口地址：http://api.map.baidu.com/telematics/v3/weather?location=%E5%B9%BF%E5%B7%9E&output=json&ak=DE93a33f736d1e75409e43a9501fcf80
+
+ak=”DE93a33f736d1e75409e43a9501fcf80”
+
+参数说明：
+location：城市名称， 建议使用urlencode()函数进行编码处理，防止用户输入特殊字符如&对url地址产生歧义：
+output：返回的数据格式，常见的有xml和json两种。
+ak：申请的ak密钥， 参考以下课件资料自行申请 
+ 
+
+
+实例代码：
+ 
+显示数据：
+ 
+结果：
+ 
+
+
+八、案例-热映电影查询
+
+接口地址如下：
+http://api.map.baidu.com/telematics/v3/movie?qt=hot_movie&location=%E5%B9%BF%E5%B7%9E&ak=DE93a33f736d1e75409e43a9501fcf80&output=xml 
+
+代码：
+ 
+ 
+结果：
+ 
+
+
+
+
+
+
+
+
+
+
+
+
