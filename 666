@@ -36,6 +36,66 @@ $data = '{
                "name":"传智播客中心",
                "url":"http://www.itcast.cn/"
             },
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	   <?php
+define("TOKEN", "weixin");
+include dirname(__FILE__)."/media.php";
+include dirname(__FILE__)."/Lib/WeChatApi.class.php";
+include dirname(__FILE__)."/Lib/WeChat.class.php";
+include dirname(__FILE__)."/Lib/OptApi.class.php";
+include dirname(__FILE__)."/DB.class.php";
+//api其实是继承了WeChat的类，这个类位于Lib/WeChat.class.php
+class WxApi extends Wechat
+{
+	//responseMsg是自动回复功能，在子类当中该方法用来覆盖实现用户的逻辑
+	public function responseMsg(){
+		//调用父类中responseMsg方法
+		parent::responseMsg();
+		//如果sendType==event并且Event==Subscribe就是用户触发订阅 
+		if( $this -> sendType=='event' && $this->Event=='subscribe' ){
+			$openId = $this -> fromUsername ;
+			//调用注册信息
+			$this -> register($openId);
+			//使用订阅回复接口
+			$this -> reSubscribe('感谢成为万岁寿司的会员!');
+		}
+	}
+	//注册方法如下:
+	private function register($openId)
+	{
+		$db = DB::getInstance();
+		//判读一个用户是否已经注册
+		$stmt = $db -> prepare( "select * from members where openId=:openId" );
+		$stmt -> execute( array(':openId'=>$openId) );
+		$rs = $stmt -> fetch( PDO::FETCH_ASSOC);
+		if( empty($rs) ){
+			$db -> exec("insert into members(openId,create_at)values('{$openId}',now())");
+		}
+	}
+
+
+}
+$WxApi = new WxApi();
+//valid方法用于api与服务器进行绑定的验证,如果要开启自定回复,那么需要把这方法注解
+//$WxApi ->valid();
+$WxApi -> responseMsg();
+ 
            
            {	
                "type":"view",
