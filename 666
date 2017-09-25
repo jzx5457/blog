@@ -1,0 +1,60 @@
+<?php
+include "Common.php";
+include LIB."WeChatApi.class.php";
+include LIB."WeChat.class.php";
+//获取创建菜单的api
+$url = WeChatApi::getApiUrl('api_create_menus');
+//拼接access_token
+$WeChat = new WeChat();
+//获取access_token
+$access_token = $WeChat -> GetAccessToken();
+$url .= $access_token;
+//定义菜单的数据包,1级菜单有传智口号,联系我们,微官网
+//传智口号的key=itcast,点击传智口号返回文本回复消息:为莘莘学子改变命运而讲课,为千万学生少走弯路而著书
+//联系我们的key=contact,点击联系我们返回文本回复消息:传智播客在珠吉路
+//微官网的子菜单(传智播客中心,黑马程序员中心)
+$data = '{
+     "button":[
+     {	
+          "type":"click",
+          "name":"传智口号",
+          "key":"itcast"
+      },
+     {	
+          "type":"click",
+          "name":"联系我们",
+          "key":"contact"
+      },
+
+
+
+      {
+           "name":"微官网",
+           "sub_button":[
+           {	
+               "type":"view",
+               "name":"传智播客中心",
+               "url":"http://www.itcast.cn/"
+            },
+           
+           {	
+               "type":"view",
+               "name":"黑马程序员中心",
+               "url":"http://www.itheima.com/"
+            },
+            { 
+               "type":"view",
+               "name":"我的优惠券",
+               "url":"https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc85df9b030d8257d&redirect_uri=http%3A%2F%2Fwww.snk147.top%2Fucenter%2Fuserinfo.php&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"
+            }
+           ]
+       }]
+ }';
+
+//使用curl的post请求方式发送data数据
+$str = $WeChat -> CurlRequest( $url , $data );
+$json = json_decode($str);
+if( $json -> errmsg == 'ok' ){
+	echo 'Create Success.';
+	echo "\n";
+}
