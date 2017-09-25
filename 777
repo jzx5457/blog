@@ -1,0 +1,62 @@
+<?php 
+//excel导出的方法
+function export()
+{
+    require "./PHPExcel.php";
+    require "./PHPExcel/Writer/Excel5.php";
+    //创建一个excel
+    $objPHPExcel = new PHPExcel();
+    $objWriter = new PHPExcel_Writer_Excel5($objPHPExcel);
+
+    //设置sheet名称
+    $sheets=$objPHPExcel->getActiveSheet()->setTitle('sheet_name');
+
+    //设置sheet列头信息
+    $objPHPExcel->setActiveSheetIndex()->setCellValue('A1', '商品名称')->setCellValue('B1', '商品原价')->setCellValue('C1', '商品售价');
+    //导出用户表的十条数据
+    mysql_connect("localhost",'root','123456');
+    mysql_query("use test");
+    mysql_query("set names utf8");
+    $result = array();
+    $sql = "select * from goods";
+    $res = mysql_query($sql);
+    while($row = mysql_fetch_assoc($res)){
+        $result[] = $row;
+    }
+    $i=2; //因为列头占用了，所以i从2开始写入数据
+    foreach($result as $v){
+        //设置单元格的值
+        $sheets=$objPHPExcel->getActiveSheet()->setCellValue('A'.$i,$v['goods_name']);
+        $sheets=$objPHPExcel->getActiveSheet()->setCellValue('B'.$i,$v['goods_ori_price']);
+        $sheets=$objPHPExcel->getActiveSheet()->setCellValue('C'.$i,$v['goods_sale_price']);
+        $i++;
+    }
+    
+    //整体设置字体和字体大小
+    $objPHPExcel->getDefaultStyle()->getFont()->setName( 'Arial');
+    $objPHPExcel->getDefaultStyle()->getFont()->setSize(10);
+
+
+    $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true); //单元格宽度自适应
+    $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(20); //设置列宽度
+    $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(20); //设置列宽度
+    $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(20); //设置列宽度
+    $objPHPExcel->getActiveSheet()->getStyle('B3')->getFont()->setBold(true); //设置单元格字体加粗
+
+    // 输出Excel表格到浏览器下载
+    header('Content-Type: application/vnd.ms-excel');
+    header('Content-Disposition: attachment;filename="goods.xls"'); //excel表格名称
+    header('Cache-Control: max-age=0');
+    header('Cache-Control: max-age=1');
+    header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+    header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+    header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+    header('Pragma: public'); // HTTP/1.0
+
+    $objWriter->save('php://output');
+
+}
+
+export();
+
+ ?>
