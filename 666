@@ -9,15 +9,15 @@ $WeChat = new WeChat();
 //获取access_token
 $access_token = $WeChat -> GetAccessToken();
 $url .= $access_token;
-//定义菜单的数据包,1级菜单有传智口号,联系我们,微官网
-//传智口号的key=itcast,点击传智口号返回文本回复消息:为莘莘学子改变命运而讲课,为千万学生少走弯路而著书
-//联系我们的key=contact,点击联系我们返回文本回复消息:传智播客在珠吉路
-//微官网的子菜单(传智播客中心,黑马程序员中心)
+//定义菜单的数据包,1级菜单有dd口号,联系我们,微官网
+//传智口号的key=itcast,点击sdfsdfsdfsdfsdfsdf
+//联系我们的key=contact,点击联系我们返回文本回复消息:sdfsdfsdf在珠吉路
+//微官网的子菜单(sdfsdfsdfsdfsdf)
 $data = '{
      "button":[
      {	
           "type":"click",
-          "name":"传智口号",
+          "name":"sdfsdf",
           "key":"itcast"
       },
      {	
@@ -33,7 +33,7 @@ $data = '{
            "sub_button":[
            {	
                "type":"view",
-               "name":"传智播客中心",
+               "name":"sdfsdfsd",
                "url":"http://www.itcast.cn/"
             },
 	    
